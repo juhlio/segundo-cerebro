@@ -1,3 +1,5 @@
+/* ── Global variables (light) ─────────────────────────────── */
+
 :root {
   --color-primary: #2563eb;
   --color-secondary: #7c3aed;
@@ -7,24 +9,44 @@
   --color-dark: #1f2937;
   --color-light: #f3f4f6;
   --color-border: #e5e7eb;
-  
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
+
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.5rem;
-  
+
   --border-radius: 0.5rem;
-  --transition: all 0.3s ease;
+  --transition: all 0.2s ease;
+
+  --header-height: 64px;
 }
 
-* {
+/* ── Dark mode variables ───────────────────────────────────── */
+
+:root.dark {
+  --color-dark: #f3f4f6;
+  --color-light: #111827;
+  --color-border: #374151;
+  --color-surface: #1f2937;
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -37,9 +59,10 @@ html {
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
-  color: var(--color-dark);
+  color: var(--color-text);
   background-color: var(--color-light);
   line-height: 1.6;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root {
@@ -48,79 +71,153 @@ body {
   flex-direction: column;
 }
 
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
-  width: 100%;
+/* ── App shell ────────────────────────────────────────────── */
+
+.app {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  min-height: 100vh;
 }
 
-.header {
-  text-align: center;
-  padding: var(--spacing-xl) 0;
-  border-bottom: 2px solid var(--color-primary);
+/* ── Header ───────────────────────────────────────────────── */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
 }
 
-.header h1 {
-  font-size: 2.5rem;
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.app-header__logo {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.app-header__title {
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: var(--spacing-md);
+  white-space: nowrap;
 }
 
-.header p {
-  font-size: var(--font-size-lg);
-  color: var(--color-dark);
-  opacity: 0.7;
+.app-header__count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background: var(--color-light);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 1px 10px;
+  white-space: nowrap;
 }
 
-.main {
+/* ── Nav ──────────────────────────────────────────────────── */
+
+.app-nav {
+  display: flex;
+  gap: var(--spacing-xs);
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-xl);
+  justify-content: center;
 }
 
-.dashboard,
-.graph {
-  background: white;
+.app-nav__btn {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  font-weight: 500;
+  padding: 6px 16px;
   border-radius: var(--border-radius);
-  padding: var(--spacing-xl);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
   transition: var(--transition);
 }
 
-.dashboard:hover,
-.graph:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.app-nav__btn:hover {
+  background: var(--color-light);
+  color: var(--color-text);
 }
 
-.dashboard h2,
-.graph h2 {
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-lg);
-  font-size: var(--font-size-xl);
+.app-nav__btn--active {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
 }
 
-.dashboard p,
-.graph p {
-  color: #6b7280;
-  line-height: 1.8;
+.app-nav__btn--active:hover {
+  background: color-mix(in srgb, var(--color-primary) 85%, black);
 }
 
-@media (max-width: 768px) {
-  .main {
-    grid-template-columns: 1fr;
+/* ── Dark mode toggle ─────────────────────────────────────── */
+
+.app-dark-toggle {
+  font-size: 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius);
+  line-height: 1;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.app-dark-toggle:hover {
+  background: var(--color-light);
+}
+
+/* ── Main content ─────────────────────────────────────────── */
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.app-view {
+  flex: 1;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .app-header {
+    padding: 0 var(--spacing-md);
+    gap: var(--spacing-sm);
   }
 
-  .header h1 {
-    font-size: 1.875rem;
+  .app-header__title {
+    display: none;
   }
 
-  .container {
+  .app-nav__btn {
+    padding: 6px 10px;
+  }
+
+  .app-main {
     padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 400px) {
+  .app-header__count {
+    display: none;
   }
 }
