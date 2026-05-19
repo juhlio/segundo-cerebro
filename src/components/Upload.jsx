@@ -1,35 +1,6 @@
 import { useRef } from 'react'
+import { parseMD } from '../utils/markdown'
 import './Upload.css'
-
-function parseMarkdown(filename, raw) {
-  const lines = raw.split('\n')
-
-  const titleLine = lines.find((l) => l.startsWith('# '))
-  const title = titleLine ? titleLine.replace(/^#\s+/, '').trim() : filename.replace(/\.md$/i, '')
-
-  const tagLine = lines.find((l) => /\*\*Tags:\*\*/i.test(l))
-  const tags = tagLine
-    ? [...tagLine.matchAll(/#([\w-]+)/g)].map((m) => m[1])
-    : []
-
-  const links = [...raw.matchAll(/\[\[([^\]]+)\]\]/g)].map((m) => m[1].trim())
-
-  const categoryLine = lines.find((l) => l.startsWith('## '))
-  const category = categoryLine ? categoryLine.replace(/^##\s+/, '').trim() : 'Sem categoria'
-
-  const type = detectType(tags)
-
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-
-  return { id, title, content: raw, tags, links, category, type }
-}
-
-function detectType(tags) {
-  const lower = tags.map((t) => t.toLowerCase())
-  if (lower.some((t) => ['projeto', 'project', 'projetos'].includes(t))) return 'project'
-  if (lower.some((t) => ['area', 'área', 'areas', 'áreas'].includes(t))) return 'area'
-  return 'note'
-}
 
 async function readFile(file) {
   return new Promise((resolve, reject) => {
@@ -50,7 +21,7 @@ export default function Upload({ onNotesAdd }) {
     const notes = await Promise.all(
       files.map(async (file) => {
         const raw = await readFile(file)
-        return parseMarkdown(file.name, raw)
+        return parseMD(raw, file.name)
       })
     )
 
