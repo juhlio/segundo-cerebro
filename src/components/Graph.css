@@ -1,7 +1,7 @@
 .graph-wrapper {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: var(--graph-height, 600px);
   background: var(--color-surface, #ffffff);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -9,7 +9,7 @@
 
 .graph-svg {
   width: 100%;
-  height: 600px;
+  height: var(--graph-height, 600px);
   display: block;
 }
 
@@ -58,13 +58,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 600px;
+  height: var(--graph-height, 600px);
   border: 2px dashed var(--color-border, #e5e7eb);
   border-radius: var(--border-radius);
   color: var(--color-text-muted, #6b7280);
   font-size: var(--font-size-lg);
   text-align: center;
   padding: var(--spacing-xl);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 1199px) {
+  :root { --graph-height: 500px; }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  :root { --graph-height: clamp(300px, 60vh, 480px); }
+
+  .graph-tooltip {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
 }
 
 /* Dark mode */

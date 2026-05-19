@@ -275,7 +275,14 @@ svg {
   background: color-mix(in srgb, var(--color-primary) 85%, black);
 }
 
-/* Dark mode toggle */
+/* Header controls (dark toggle + hamburger) */
+
+.app-header__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
 
 .app-dark-toggle {
   font-size: 1.25rem;
@@ -284,11 +291,121 @@ svg {
   padding: var(--spacing-xs);
   border-radius: var(--border-radius);
   line-height: 1;
-  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app-dark-toggle:hover {
   background: var(--color-bg);
+}
+
+/* Hamburger button */
+
+.app-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius);
+}
+
+.app-hamburger:hover {
+  background: var(--color-bg);
+}
+
+.app-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.app-hamburger--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.app-hamburger--open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.app-hamburger--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile nav drawer */
+
+.app-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 98;
+  animation: fadeIn 0.15s ease;
+}
+
+.app-nav-mobile {
+  display: none;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 99;
+  padding: var(--spacing-sm);
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.app-nav-mobile--open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.app-nav-mobile__btn {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  padding: 12px var(--spacing-md);
+  border-radius: var(--border-radius);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  min-height: 44px;
+}
+
+.app-nav-mobile__btn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.app-nav-mobile__btn--active {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
 }
 
 /* Main */
@@ -332,38 +449,47 @@ svg {
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVO
+   Desktop  : ≥ 1200px  (padrão — sem media query)
+   Tablet   : 768–1199px
+   Mobile   : < 768px
 ═══════════════════════════════════════════════════════════ */
 
-/* Tablet */
-@media (max-width: 768px) {
+/* ── Tablet ─────────────────────────── */
+@media (max-width: 1199px) {
+  .app-main {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
+
+/* ── Mobile ─────────────────────────── */
+@media (max-width: 767px) {
+  /* Header */
   .app-header {
     padding: 0 var(--spacing-md);
     gap: var(--spacing-sm);
   }
 
+  /* Oculta nav desktop, exibe hamburger */
+  .app-nav {
+    display: none;
+  }
+
+  .app-hamburger {
+    display: flex;
+  }
+
+  .app-nav-overlay {
+    display: block;
+  }
+
+  .app-nav-mobile {
+    display: flex;
+  }
+
+  /* Main */
   .app-main {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     gap: var(--spacing-md);
-  }
-
-  .app-nav__btn {
-    padding: 6px 12px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .app-header__title {
-    display: none;
-  }
-
-  .app-header__count {
-    display: none;
-  }
-
-  .app-nav__btn {
-    padding: 6px 8px;
-    font-size: 0.8rem;
   }
 }
 

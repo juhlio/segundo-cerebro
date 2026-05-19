@@ -39,7 +39,7 @@ export default function Graph({ notes = [], onSelectNote }) {
 
     const { nodes, links } = buildGraph(notes)
     const width = svgRef.current.clientWidth
-    const height = 600
+    const height = svgRef.current.clientHeight || 600
 
     svg.attr('viewBox', `0 0 ${width} ${height}`)
 
@@ -118,10 +118,12 @@ export default function Graph({ notes = [], onSelectNote }) {
     })
 
     const ro = new ResizeObserver(() => {
-      const newWidth = svgRef.current?.clientWidth
-      if (!newWidth) return
-      svg.attr('viewBox', `0 0 ${newWidth} ${height}`)
-      simulation.force('center', d3.forceCenter(newWidth / 2, height / 2))
+      const el = svgRef.current
+      if (!el) return
+      const newWidth = el.clientWidth
+      const newHeight = el.clientHeight || height
+      svg.attr('viewBox', `0 0 ${newWidth} ${newHeight}`)
+      simulation.force('center', d3.forceCenter(newWidth / 2, newHeight / 2))
       simulation.alpha(0.3).restart()
     })
     ro.observe(svgRef.current)

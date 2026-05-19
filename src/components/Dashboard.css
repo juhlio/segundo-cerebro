@@ -126,16 +126,31 @@
   color: var(--color-text-muted);
 }
 
-/* Responsive */
+/* ── Responsive ─────────────────────────────────────────── */
 
-@media (max-width: 480px) {
+/* Desktop 1200px+: auto-fill minmax(240px) → 3+ cols (padrão acima) */
+
+/* Tablet: minmax(200px) garante 2 colunas em telas de ~500–1199px */
+@media (max-width: 1199px) {
   .notes-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+/* Mobile: 1 coluna */
+@media (max-width: 767px) {
   .notes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .note-card {
+    padding: var(--spacing-md);
+  }
+
+  /* Alvos touch maiores */
+  .note-card__tag {
+    padding: 4px 10px;
+    font-size: var(--font-size-sm);
   }
 }

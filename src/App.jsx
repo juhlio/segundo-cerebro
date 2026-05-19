@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Upload from './components/Upload'
 import Dashboard from './components/Dashboard'
 import Graph from './components/Graph'
@@ -37,11 +37,38 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem(STORAGE_DARK) === 'true'
   )
+  const [navOpen, setNavOpen] = useState(false)
+  const navRef = useRef(null)
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? 'dark' : ''
     localStorage.setItem(STORAGE_DARK, darkMode)
   }, [darkMode])
+
+  // Fecha nav ao clicar fora no mobile
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (navOpen && navRef.current && !navRef.current.contains(e.target)) {
+        setNavOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [navOpen])
+
+  // Fecha nav ao redimensionar para desktop
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 768) setNavOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  function selectView(id) {
+    setView(id)
+    setNavOpen(false)
+  }
 
   function handleNotesAdd(incoming) {
     setNotes((prev) => {
@@ -73,14 +100,6 @@ export default function App() {
     setSelectedNote((prev) => (prev?.id === id ? null : prev))
   }
 
-  function handleSelectNote(note) {
-    setSelectedNote(note)
-  }
-
-  function toggleDarkMode() {
-    setDarkMode((prev) => !prev)
-  }
-
   return (
     <div className="app">
       <header className="app-header">
@@ -92,13 +111,14 @@ export default function App() {
           </span>
         </div>
 
+        {/* Desktop nav */}
         <nav className="app-nav" role="navigation" aria-label="Visualizações">
           {VIEWS.map(({ id, label }) => (
             <button
               key={id}
               type="button"
               className={`app-nav__btn ${view === id ? 'app-nav__btn--active' : ''}`}
-              onClick={() => setView(id)}
+              onClick={() => selectView(id)}
               aria-current={view === id ? 'page' : undefined}
             >
               {label}
@@ -106,15 +126,52 @@ export default function App() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          className="app-dark-toggle"
-          onClick={toggleDarkMode}
-          aria-label={darkMode ? 'Ativar modo claro' : 'Ativar modo escuro'}
-        >
-          {darkMode ? '☀️' : '🌙'}
-        </button>
+        <div className="app-header__controls">
+          <button
+            type="button"
+            className="app-dark-toggle"
+            onClick={() => setDarkMode((p) => !p)}
+            aria-label={darkMode ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+
+          {/* Hamburger – só visível em mobile via CSS */}
+          <button
+            type="button"
+            className={`app-hamburger ${navOpen ? 'app-hamburger--open' : ''}`}
+            onClick={() => setNavOpen((p) => !p)}
+            aria-label="Abrir menu"
+            aria-expanded={navOpen}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </header>
+
+      {/* Mobile nav drawer */}
+      {navOpen && (
+        <div className="app-nav-overlay" aria-hidden="true" onClick={() => setNavOpen(false)} />
+      )}
+      <nav
+        ref={navRef}
+        className={`app-nav-mobile ${navOpen ? 'app-nav-mobile--open' : ''}`}
+        role="navigation"
+        aria-label="Menu mobile"
+      >
+        {VIEWS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className={`app-nav-mobile__btn ${view === id ? 'app-nav-mobile__btn--active' : ''}`}
+            onClick={() => selectView(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
 
       <main className="app-main">
         <Upload onNotesAdd={handleNotesAdd} />
@@ -124,20 +181,20 @@ export default function App() {
             <Dashboard
               notes={notes}
               selectedNote={selectedNote}
-              onSelectNote={handleSelectNote}
+              onSelectNote={setSelectedNote}
             />
           )}
           {view === 'graph' && (
             <Graph
               notes={notes}
-              onSelectNote={handleSelectNote}
+              onSelectNote={setSelectedNote}
             />
           )}
           {view === 'editor' && (
             <Editor
               notes={notes}
               selectedNote={selectedNote}
-              onSelectNote={handleSelectNote}
+              onSelectNote={setSelectedNote}
               onUpdateNote={handleNoteUpdate}
               onDeleteNote={handleNoteDelete}
             />
