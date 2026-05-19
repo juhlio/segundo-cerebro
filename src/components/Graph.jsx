@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
 import './Graph.css'
 
@@ -12,10 +12,9 @@ const NODE_RADIUS = 10
 
 function buildGraph(notes) {
   const idSet = new Set(notes.map((n) => n.id))
-
   const nodes = notes.map((n) => ({ id: n.id, title: n.title, type: n.type || 'note' }))
-
   const links = []
+
   for (const note of notes) {
     for (const targetId of note.links ?? []) {
       if (idSet.has(targetId) && targetId !== note.id) {
@@ -29,7 +28,16 @@ function buildGraph(notes) {
 
 export default function Graph({ notes = [], onSelectNote }) {
   const svgRef = useRef(null)
+  const wrapperRef = useRef(null)
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, title: '' })
+  const [isLoading, setIsLoading] = useState(false)
+
+  const noteById = useMemo(
+    () => Object.fromEntries(notes.map((n) => [n.id, n])),
+    [notes]
+  )
+
+  const { nodes, links } = useMemo(() => buildGraph(notes), [notes])
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
@@ -37,17 +45,20 @@ export default function Graph({ notes = [], onSelectNote }) {
 
     if (notes.length === 0) return
 
-    const { nodes, links } = buildGraph(notes)
+    setIsLoading(true)
+
     const width = svgRef.current.clientWidth
     const height = svgRef.current.clientHeight || 600
 
     svg.attr('viewBox', `0 0 ${width} ${height}`)
 
-    const noteById = Object.fromEntries(notes.map((n) => [n.id, n]))
+    // Deep-clone so D3 can mutate without affecting the memoized originals
+    const simNodes = nodes.map((n) => ({ ...n }))
+    const simLinks = links.map((l) => ({ ...l }))
 
     const simulation = d3
-      .forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id((d) => d.id).distance(120))
+      .forceSimulation(simNodes)
+      .force('link', d3.forceLink(simLinks).id((d) => d.id).distance(120))
       .force('charge', d3.forceManyBody().strength(-300))
       .force('center', d3.forceCenter(width / 2, height / 2))
       .force('collision', d3.forceCollide(NODE_RADIUS + 4))
@@ -56,7 +67,7 @@ export default function Graph({ notes = [], onSelectNote }) {
       .append('g')
       .attr('class', 'graph-links')
       .selectAll('line')
-      .data(links)
+      .data(simLinks)
       .join('line')
       .attr('class', 'graph-link')
 
@@ -64,7 +75,7 @@ export default function Graph({ notes = [], onSelectNote }) {
       .append('g')
       .attr('class', 'graph-nodes')
       .selectAll('circle')
-      .data(nodes)
+      .data(simNodes)
       .join('circle')
       .attr('class', 'graph-node')
       .attr('r', NODE_RADIUS)
@@ -89,8 +100,7 @@ export default function Graph({ notes = [], onSelectNote }) {
       .on('mouseleave', () => setTooltip((prev) => ({ ...prev, visible: false })))
       .on('click', (_, d) => onSelectNote?.(noteById[d.id]))
       .call(
-        d3
-          .drag()
+        d3.drag()
           .on('start', (event, d) => {
             if (!event.active) simulation.alphaTarget(0.3).restart()
             d.fx = d.x
@@ -107,15 +117,16 @@ export default function Graph({ notes = [], onSelectNote }) {
           })
       )
 
-    simulation.on('tick', () => {
-      link
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y)
-
-      node.attr('cx', (d) => d.x).attr('cy', (d) => d.y)
-    })
+    simulation
+      .on('tick', () => {
+        link
+          .attr('x1', (d) => d.source.x)
+          .attr('y1', (d) => d.source.y)
+          .attr('x2', (d) => d.target.x)
+          .attr('y2', (d) => d.target.y)
+        node.attr('cx', (d) => d.x).attr('cy', (d) => d.y)
+      })
+      .on('end', () => setIsLoading(false))
 
     const ro = new ResizeObserver(() => {
       const el = svgRef.current
@@ -131,24 +142,32 @@ export default function Graph({ notes = [], onSelectNote }) {
     return () => {
       simulation.stop()
       ro.disconnect()
+      setIsLoading(false)
     }
-  }, [notes, onSelectNote])
+  }, [nodes, links, noteById, onSelectNote])
 
   if (notes.length === 0) {
     return (
-      <div className="graph-empty">
+      <div className="graph-empty" role="status" aria-live="polite">
         <p>Envie arquivos MD para visualizar o grafo</p>
       </div>
     )
   }
 
   return (
-    <div className="graph-wrapper">
-      <svg ref={svgRef} className="graph-svg" />
+    <div className="graph-wrapper" ref={wrapperRef}>
+      {isLoading && (
+        <div className="graph-loading" aria-label="Calculando grafo…" aria-live="polite">
+          <span className="graph-loading__spinner" aria-hidden="true" />
+          <span>Calculando…</span>
+        </div>
+      )}
+      <svg ref={svgRef} className="graph-svg" aria-label="Grafo de conexões entre notas" role="img" />
       {tooltip.visible && (
         <div
           className="graph-tooltip"
           style={{ left: tooltip.x, top: tooltip.y }}
+          aria-hidden="true"
         >
           {tooltip.title}
         </div>

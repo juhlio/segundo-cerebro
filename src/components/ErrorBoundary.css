@@ -1,0 +1,41 @@
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  min-height: 300px;
+  padding: var(--spacing-xl);
+  border: 2px dashed var(--color-danger, #ef4444);
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+
+.error-boundary__title {
+  font-size: var(--font-size-xl);
+  color: var(--color-danger, #ef4444);
+}
+
+.error-boundary__message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-family: monospace;
+  max-width: 480px;
+  word-break: break-word;
+}
+
+.error-boundary__btn {
+  background: var(--color-danger, #ef4444);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 20px;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.error-boundary__btn:hover {
+  background: color-mix(in srgb, var(--color-danger, #ef4444) 85%, black);
+}

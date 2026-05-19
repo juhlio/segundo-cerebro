@@ -144,11 +144,15 @@
   gap: var(--spacing-md, 1rem);
 }
 
-.editor-unsaved {
+.editor-status {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--color-warning, #f59e0b);
   flex: 1;
+  transition: color 0.2s ease;
 }
+
+.editor-status--dirty  { color: var(--color-warning, #f59e0b); }
+.editor-status--saving { color: var(--color-text-muted, #7a7a7a); }
+.editor-status--saved  { color: var(--color-success, #10b981); }
 
 .editor-actions {
   display: flex;
