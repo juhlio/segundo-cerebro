@@ -69,30 +69,28 @@
 
 /* Dark mode */
 
-@media (prefers-color-scheme: dark) {
-  .graph-wrapper {
-    background: #1f2937;
-  }
+[data-theme='dark'] .graph-wrapper {
+  background: var(--color-surface);
+}
 
-  .graph-link {
-    stroke: #374151;
-  }
+[data-theme='dark'] .graph-link {
+  stroke: var(--color-border);
+}
 
-  .graph-node {
-    stroke: rgba(255, 255, 255, 0.1);
-  }
+[data-theme='dark'] .graph-node {
+  stroke: rgba(255, 255, 255, 0.1);
+}
 
-  .graph-node:hover {
-    stroke: rgba(255, 255, 255, 0.35);
-    filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-  }
+[data-theme='dark'] .graph-node:hover {
+  stroke: rgba(255, 255, 255, 0.35);
+  filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
 
-  .graph-tooltip {
-    background: #111827;
-  }
+[data-theme='dark'] .graph-tooltip {
+  background: #111827;
+}
 
-  .graph-empty {
-    border-color: #374151;
-    color: #9ca3af;
-  }
+[data-theme='dark'] .graph-empty {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
 }

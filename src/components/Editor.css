@@ -194,37 +194,35 @@
 
 /* Dark mode */
 
-@media (prefers-color-scheme: dark) {
-  .editor-layout {
-    background: #1f2937;
-    border-color: #374151;
-  }
+[data-theme='dark'] .editor-layout {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
 
-  .notes-list {
-    border-color: #374151;
-  }
+[data-theme='dark'] .notes-list {
+  border-color: var(--color-border);
+}
 
-  .notes-list__title {
-    color: #f3f4f6;
-    border-color: #374151;
-  }
+[data-theme='dark'] .notes-list__title {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
 
-  .notes-list__item {
-    color: #d1d5db;
-  }
+[data-theme='dark'] .notes-list__item {
+  color: var(--color-text);
+}
 
-  .notes-list__item:hover {
-    background: #374151;
-  }
+[data-theme='dark'] .notes-list__item:hover {
+  background: var(--color-gray);
+}
 
-  .editor-title,
-  .editor-content {
-    color: #f3f4f6;
-  }
+[data-theme='dark'] .editor-title,
+[data-theme='dark'] .editor-content {
+  color: var(--color-text);
+}
 
-  .editor-footer {
-    border-color: #374151;
-  }
+[data-theme='dark'] .editor-footer {
+  border-color: var(--color-border);
 }
 
 /* Responsive */

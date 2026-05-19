@@ -39,7 +39,7 @@ export default function App() {
   )
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode)
+    document.documentElement.dataset.theme = darkMode ? 'dark' : ''
     localStorage.setItem(STORAGE_DARK, darkMode)
   }, [darkMode])
 

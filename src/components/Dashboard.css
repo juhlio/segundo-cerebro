@@ -104,28 +104,26 @@
 
 /* Dark mode */
 
-@media (prefers-color-scheme: dark) {
-  .note-card {
-    background: var(--color-surface, #1f2937);
-    border-color: #374151;
-  }
+[data-theme='dark'] .note-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
 
-  .note-card__title {
-    color: #f3f4f6;
-  }
+[data-theme='dark'] .note-card__title {
+  color: var(--color-text);
+}
 
-  .note-card__preview {
-    color: #9ca3af;
-  }
+[data-theme='dark'] .note-card__preview {
+  color: var(--color-text-muted);
+}
 
-  .category-group__title {
-    border-color: #374151;
-  }
+[data-theme='dark'] .category-group__title {
+  border-color: var(--color-border);
+}
 
-  .dashboard-empty {
-    border-color: #374151;
-    color: #9ca3af;
-  }
+[data-theme='dark'] .dashboard-empty {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
 }
 
 /* Responsive */

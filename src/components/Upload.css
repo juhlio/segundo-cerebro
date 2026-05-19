@@ -61,21 +61,19 @@
 
 /* Dark mode */
 
-@media (prefers-color-scheme: dark) {
-  .upload {
-    background: #1f2937;
-    border-color: #374151;
-  }
+[data-theme='dark'] .upload {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
 
-  .upload__title {
-    color: #f3f4f6;
-  }
+[data-theme='dark'] .upload__title {
+  color: var(--color-text);
+}
 
-  .upload__btn--secondary {
-    background: #374151;
-    color: #d1d5db;
-    border-color: #4b5563;
-  }
+[data-theme='dark'] .upload__btn--secondary {
+  background: var(--color-gray);
+  color: var(--color-text);
+  border-color: var(--color-border);
 }
 
 /* Responsive */
