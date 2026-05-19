@@ -1,0 +1,98 @@
+.graph-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: var(--color-surface, #ffffff);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.graph-svg {
+  width: 100%;
+  height: 600px;
+  display: block;
+}
+
+/* Links */
+
+.graph-link {
+  stroke: var(--color-border, #e5e7eb);
+  stroke-width: 1.5;
+  stroke-opacity: 0.7;
+}
+
+/* Nodes */
+
+.graph-node {
+  cursor: pointer;
+  stroke: rgba(0, 0, 0, 0.15);
+  stroke-width: 1.5;
+  transition: stroke-width 0.15s ease, filter 0.15s ease;
+}
+
+.graph-node:hover {
+  stroke: rgba(0, 0, 0, 0.4);
+  stroke-width: 2.5;
+  filter: brightness(1.1) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+/* Tooltip */
+
+.graph-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--color-dark, #1f2937);
+  color: #f9fafb;
+  font-size: 0.75rem;
+  font-family: var(--font-family);
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Empty state */
+
+.graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  border: 2px dashed var(--color-border, #e5e7eb);
+  border-radius: var(--border-radius);
+  color: var(--color-text-muted, #6b7280);
+  font-size: var(--font-size-lg);
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+/* Dark mode */
+
+@media (prefers-color-scheme: dark) {
+  .graph-wrapper {
+    background: #1f2937;
+  }
+
+  .graph-link {
+    stroke: #374151;
+  }
+
+  .graph-node {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+
+  .graph-node:hover {
+    stroke: rgba(255, 255, 255, 0.35);
+    filter: brightness(1.15) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  }
+
+  .graph-tooltip {
+    background: #111827;
+  }
+
+  .graph-empty {
+    border-color: #374151;
+    color: #9ca3af;
+  }
+}
